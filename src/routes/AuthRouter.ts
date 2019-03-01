@@ -26,7 +26,7 @@ export class AuthRouter {
         try {
             // Checking Authorization header
             if (!req.headers.authorization) {
-                return res.status(400).send("No authorization header sent");
+                return res.status(401).send("No authorization header sent");
             }
             const pieces = (req.headers.authorization as string).split(" ", 2);
 

@@ -12,7 +12,19 @@ class AuthenticationMiddleware {
     }
 
     private Authenticate = (req: Request, res: Response, next: NextFunction) => {
-        const token = req.headers["x-api-key"] as string;
+        // Checking Authorization header
+        // Checking Authorization header
+        if (!req.headers.authorization) {
+            return res.status(401).send("No authorization header sent");
+        }
+        const pieces = (req.headers.authorization as string).split(" ", 2);
+        logger(pieces);
+        if (pieces.length !== 2 || pieces[0].toLowerCase() !== "basic") {
+            return res.status(401).send("Wrong format of basic authentication data");
+        }
+        const buffer = Buffer.from(pieces[1], "base64");
+        const token = buffer.toString().split(":")[0];
+
         logger(token);
         if (token) {
             jwt.verify(token, config.SECRET, {algorithms: ["HS512"]}, (err, decoded) => {
