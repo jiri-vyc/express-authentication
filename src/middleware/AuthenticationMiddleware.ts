@@ -13,16 +13,18 @@ class AuthenticationMiddleware {
 
     private Authenticate = (req: Request, res: Response, next: NextFunction) => {
         // Checking Authorization header
-        // Checking Authorization header
         if (!req.headers.authorization) {
             return res.status(401).send("No authorization header sent");
         }
+        // Split Authorization header and check if it's ok
         const pieces = (req.headers.authorization as string).split(" ", 2);
         logger(pieces);
         if (pieces.length !== 2 || pieces[0].toLowerCase() !== "basic") {
             return res.status(401).send("Wrong format of basic authentication data");
         }
+
         const buffer = Buffer.from(pieces[1], "base64");
+        // Authorization: Basic {username}:{password}, in this case, get JWT token from {username}
         const token = buffer.toString().split(":")[0];
 
         logger(token);
