@@ -1,3 +1,9 @@
+## Prerequisites
+
+- node 
+- npm
+- typescript
+
 ## Install
 
 `npm run build`
