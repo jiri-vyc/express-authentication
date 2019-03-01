@@ -48,9 +48,9 @@ export class App {
             res.status(200).send("Service running");
         });
 
+        this.exp.use("/auth", authRouter);
         this.exp.use(authenticationMiddleware);
         this.exp.use("/users", usersRouter);
-        this.exp.use("/auth", authRouter);
 
         this.exp.use((req, res, next) => {
             res.status(404).send("Route not found");

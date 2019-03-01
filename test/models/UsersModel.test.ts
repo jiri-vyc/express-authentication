@@ -21,4 +21,10 @@ describe("UsersModel", () => {
         const model = new UsersModel();
         expect(isArray(model.GetAll())).to.be.true;
     });
+
+    it("Should return user by username", async () => {
+        const model = new UsersModel();
+        const user = await model.GetByUsername("user1");
+        expect(user.name).to.be.equal("Placeholder 1");
+    });
 });

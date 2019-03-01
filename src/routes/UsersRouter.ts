@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 import { UsersModel } from "./../models/UsersModel";
 
-export class BaseRouter {
+const logger = require("debug")("express-authentication");
+
+export class UsersRouter {
     public router: Router;
     public model: UsersModel;
 
@@ -19,18 +21,21 @@ export class BaseRouter {
         this.router.delete("/:id", this.DeleteOne);
     }
 
+    // Get all users
     protected GetAll = (req: Request, res: Response, next: NextFunction) => {
-        res.send("Get all users route");
+        res.send(this.model.GetAll());
     }
 
+    // Get user by ID
     protected GetOne = (req: Request, res: Response, next: NextFunction) => {
         if (!req.params.id) {
-            return next("Not found user");
+            return next("Id not specified");
         } else {
-            res.send("Found user " + req.params.id);
+            res.send(this.model.GetOne(req.params.id));
         }
     }
 
+    // Delete user
     protected DeleteOne = (req: Request, res: Response, next: NextFunction) => {
         if (!req.params.id) {
             return next("Not found user");
@@ -39,6 +44,7 @@ export class BaseRouter {
         }
     }
 
+    // Update user
     protected UpdateOne = (req: Request, res: Response, next: NextFunction) => {
         if (!req.params.id) {
             return next("Not found user");
@@ -47,9 +53,10 @@ export class BaseRouter {
         }
     }
 
+    // Registration
     protected Create = (req: Request, res: Response, next: NextFunction) => {
         res.send("Create user route");
     }
 }
 
-export default new BaseRouter().router;
+export default new UsersRouter().router;
