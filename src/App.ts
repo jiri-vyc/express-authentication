@@ -37,6 +37,7 @@ export class App {
 
     private middleware = () => {
         this.exp.use(httpLogger("combined"));
+        this.exp.use(express.json());
         this.exp.use((req: Request, res: Response, next: NextFunction) => {
             res.setHeader("Content-Type", "application/json");
             next();
@@ -44,15 +45,15 @@ export class App {
     }
 
     private routes = () => {
-        this.exp.get("/", (req, res, next) => {
-            res.status(200).send("Service running");
+        this.exp.get("/", (req: Request, res: Response, next: NextFunction) => {
+            res.status(200).send("Authentication service running");
         });
 
         this.exp.use("/auth", authRouter);
         this.exp.use(authenticationMiddleware);
         this.exp.use("/users", usersRouter);
 
-        this.exp.use((req, res, next) => {
+        this.exp.use((req: Request, res: Response, next: NextFunction) => {
             res.status(404).send("Route not found");
         });
 

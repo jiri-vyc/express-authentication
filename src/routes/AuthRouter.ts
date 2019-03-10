@@ -1,6 +1,8 @@
+import * as bcrypt from "bcryptjs";
 import { NextFunction, Request, Response, Router } from "express";
 import * as jwt from "jsonwebtoken";
 import config from "../config";
+import { parseBasicAuthorization } from "../helpers/Params";
 import { UsersModel } from "../models/UsersModel";
 
 const logger = require("debug")("express-authentication");
@@ -22,38 +24,31 @@ export class AuthRouter {
 
     // Authentication
     protected Login = async (req: Request, res: Response, next: NextFunction) => {
-
         try {
             // Checking Authorization header
             if (!req.headers.authorization) {
                 return res.status(401).send("No authorization header sent");
             }
-            const pieces = (req.headers.authorization as string).split(" ", 2);
-
-            logger(pieces);
-            if (pieces.length !== 2 || pieces[0].toLowerCase() !== "basic") {
-                throw new Error("Wrong format of basic authentication data");
-            }
-            const buffer = Buffer.from(pieces[1], "base64");
-            const [username, password] = buffer.toString().split(":");
-
+            const [username, password] = parseBasicAuthorization(req.headers.authorization);
             const user = await this.model.GetByUsername(username);
-            // TODO: change to bcrypt.compare
-            if (user && user.password === password) {
-                    const tempUser = {
-                        role: user.role,
-                        token: "",
-                        username: user.username,
-                    };
-                    const token = jwt.sign(tempUser, config.SECRET, {
-                        algorithm: "HS512",
-                        expiresIn: "2 days",
-                    });
-                    tempUser.token = token;
-                    return res.status(200).send(tempUser);
-            } else {
-                throw new Error("User not found or passwords don't match");
+            if (!user) {
+                throw new Error("User not found.");
             }
+            const compareResult = await this.model.CheckPassword(password, user.password);
+            if (!compareResult) {
+                throw new Error("Invalid password");
+            }
+            const tempUser = {
+                role: user.role,
+                token: "",
+                username: user.username,
+            };
+            const token = jwt.sign(tempUser, config.SECRET, {
+                algorithm: "HS512",
+                expiresIn: "2 days",
+            });
+            tempUser.token = token;
+            return res.status(200).send(tempUser);
         } catch (e) {
             logger(e);
             return res.status(401).send("Not authorized");

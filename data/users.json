@@ -1,0 +1,34 @@
+[
+    {
+        "id": "b61e0a4b-7482-4214-b307-b13c6ac2a66c",
+        "name": "Name 1",
+        "password": "$2a$10$HrJtWI5ogLRRdHMggtayyOBbhBXfwQwXrt/Lp2ovoNxCuO5vNWiR.",
+        "role": "user",
+        "surname": "Surname 1",
+        "username": "user1"
+    },
+    {
+        "id": "b18de86f-61e1-4f72-bc67-8734707d70a4",
+        "name": "Name 2",
+        "password": "$2a$10$gOZbKyDBupte3ubdW2DoE./AGo/DWRnz9JoZgtL8LZsIqtbztOfb6",
+        "role": "user",
+        "surname": "Surname 2",
+        "username": "user2"
+    },
+    {
+        "id": "ad3c3cb9-1dfe-49c6-b1f4-8ee61e73fb51",
+        "name": "Name 3",
+        "password": "$2a$10$XFyZ4/uB7TMGAU7aSnbu4ul9qQxwfrNadv.ip9fGLoAiNpPmFOQxa",
+        "role": "user",
+        "surname": "Surname 3",
+        "username": "user3"
+    },
+    {
+        "id": "780e3d27-cc6b-46b8-8561-0804db432afa",
+        "name": "Name 4",
+        "password": "$2a$10$/mUQebwrTsIN1ZC2rp08GuqXJQsMbPnUw3ALxmPv1/FBcLLGo0qEi",
+        "role": "user",
+        "surname": "Surname 4",
+        "username": "user4"
+    }
+]

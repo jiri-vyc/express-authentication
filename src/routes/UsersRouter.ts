@@ -17,45 +17,59 @@ export class UsersRouter {
         this.router.get("/", this.GetAll);
         this.router.post("/", this.Create);
         this.router.get("/:id", this.GetOne);
-        this.router.put("/:id", this.UpdateOne);
         this.router.delete("/:id", this.DeleteOne);
     }
 
     // Get all users
     protected GetAll = (req: Request, res: Response, next: NextFunction) => {
-        res.send(this.model.GetAll());
+        res.status(200).send(this.model.GetAll());
     }
 
     // Get user by ID
-    protected GetOne = (req: Request, res: Response, next: NextFunction) => {
+    protected GetOne = async (req: Request, res: Response, next: NextFunction) => {
         if (!req.params.id) {
             return next("Id not specified");
         } else {
-            res.send(this.model.GetOne(req.params.id));
+            const user = await this.model.GetOne(req.params.id);
+            if (user === undefined) {
+                return res.status(404).send("User doesn't exist");
+            }
+            res.status(200).send(user);
         }
     }
 
     // Delete user
-    protected DeleteOne = (req: Request, res: Response, next: NextFunction) => {
+    protected DeleteOne = async (req: Request, res: Response, next: NextFunction) => {
         if (!req.params.id) {
-            return next("Not found user");
-        } else {
-            res.send("Found user for deletion " + req.params.id);
+            return next("Missing ID parameter for deleting user.");
         }
-    }
-
-    // Update user
-    protected UpdateOne = (req: Request, res: Response, next: NextFunction) => {
-        if (!req.params.id) {
-            return next("Not found user");
-        } else {
-            res.send("Found user for updating " + req.params.id);
+        try {
+            const user = await this.model.GetOne(req.params.id);
+            if (user === undefined) {
+                return res.status(404).send("User doesn't exist");
+            }
+            await this.model.DeleteOne(req.params.id);
+            res.status(200).send("User deleted.");
+        } catch (e) {
+            logger(e);
+            res.status(500).send("Error deleting a user");
         }
     }
 
     // Registration
-    protected Create = (req: Request, res: Response, next: NextFunction) => {
-        res.send("Create user route");
+    protected Create = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const user = await this.model.CreateUser(   req.body.username,
+                                                        req.body.name,
+                                                        req.body.surname,
+                                                        req.body.password,
+                                                        "user",
+                                                    );
+            res.status(200).send(user);
+        } catch (e) {
+            logger(e);
+            res.status(500).send("Error creating a user");
+        }
     }
 }
 

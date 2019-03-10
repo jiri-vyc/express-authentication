@@ -1,4 +1,4 @@
 export default {
-    PORT: process.env.PORT || "3000",
-    SECRET: process.env.SECRET || "secret",
+    PORT: process.env.PORT,
+    SECRET: process.env.SECRET || "appsecret",
 };
